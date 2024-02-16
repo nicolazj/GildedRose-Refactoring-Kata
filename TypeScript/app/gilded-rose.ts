@@ -7,6 +7,8 @@ const ITEM_CONJURED = "Conjured Mana Cake";
 const MAX_QUALITY = 50;
 // The Quality of an item is never negative
 const MIN_QUALITY = 0;
+
+
 export class Item {
   name: string;
   sellIn: number;
