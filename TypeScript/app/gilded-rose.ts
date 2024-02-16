@@ -3,7 +3,9 @@ const ITEM_BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert";
 const ITEM_SULFURAS = "Sulfuras, Hand of Ragnaros";
 const ITEM_CONJURED = "Conjured Mana Cake";
 
+// The Quality of an item is never more than 50
 const MAX_QUALITY = 50;
+// The Quality of an item is never negative
 const MIN_QUALITY = 0;
 export class Item {
   name: string;
@@ -18,16 +20,12 @@ export class Item {
 }
 
 export class GildedRose {
-  items: Array<Item>;
+  items: Item[];
 
-  constructor(items = [] as Array<Item>) {
+  constructor(items: Item[] = []) {
     this.items = items;
   }
 
-  updateSulfuras(item: Item) {
-    // “Sulfuras”, being a legendary item, never has to be sold or decreases in Quality
-    // so does nothing
-  }
   updateAgedBrie(item: Item) {
     // “Aged Brie” actually increases in Quality the older it gets
     if (item.sellIn > 0) {
@@ -73,15 +71,14 @@ export class GildedRose {
   }
   clampQuality(item: Item) {
     if (item.quality > MAX_QUALITY) item.quality = MAX_QUALITY;
-    if (item.quality < MIN_QUALITY) item.quality = MIN_QUALITY;
+    else if (item.quality < MIN_QUALITY) item.quality = MIN_QUALITY;
   }
 
   updateQuality() {
-    for (let i = 0; i < this.items.length; i++) {
-      let item = this.items[i];
+    this.items.forEach((item) => {
       // "Sulfuras", being a legendary item, never has to be sold or decreases in Quality
       // early return;
-      if (item.name === ITEM_SULFURAS) continue;
+      if (item.name === ITEM_SULFURAS) return;
 
       switch (item.name) {
         case ITEM_AGED_BRIE:
@@ -99,7 +96,7 @@ export class GildedRose {
       }
       this.clampQuality(item);
       this.updateSellIn(item);
-    }
+    });
 
     return this.items;
   }
